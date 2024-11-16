@@ -8,17 +8,17 @@ Public pfMnfcrsQtty
 
 
 Sub InitializePivotTable()
-    ' Укажите здесь имя вашей сводной таблицы
-    Set pt = ActiveSheet.PivotTables("Сводная таблица1")
+    ' РЈРєР°Р¶РёС‚Рµ Р·РґРµСЃСЊ РёРјСЏ РІР°С€РµР№ СЃРІРѕРґРЅРѕР№ С‚Р°Р±Р»РёС†С‹
+    Set pt = ActiveSheet.PivotTables("РЎРІРѕРґРЅР°СЏ С‚Р°Р±Р»РёС†Р°1")
     
-    ' Укажите здесь имя нужного поля в сводной таблице
-    Set pfMonth = pt.PivotFields("Месяц Года")
-    Set pfMnfcr = pt.PivotFields("Производитель")
-    ' NOTE: месяцев в фильтре может быть меньше 12!!!!
+    ' РЈРєР°Р¶РёС‚Рµ Р·РґРµСЃСЊ РёРјСЏ РЅСѓР¶РЅРѕРіРѕ РїРѕР»СЏ РІ СЃРІРѕРґРЅРѕР№ С‚Р°Р±Р»РёС†Рµ
+    Set pfMonth = pt.PivotFields("РњРµСЃСЏС† Р“РѕРґР°")
+    Set pfMnfcr = pt.PivotFields("РџСЂРѕРёР·РІРѕРґРёС‚РµР»СЊ")
+    ' NOTE: РјРµСЃСЏС†РµРІ РІ С„РёР»СЊС‚СЂРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РјРµРЅСЊС€Рµ 12!!!!
     pfMonthsQtty = pfMonth.PivotItems.Count
     pfMnfcrsQtty = pfMnfcr.PivotItems.Count
 
-    ' Инициализируем диапазон mngrFilter для фильтрации
+    ' РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РґРёР°РїР°Р·РѕРЅ mngrFilter РґР»СЏ С„РёР»СЊС‚СЂР°С†РёРё
     Dim lastRow As Long
     lastRow = Cells(Rows.Count, 1).End(xlUp).Row
     Set mngrFilter = Range(Cells(6, 31), Cells(lastRow, 31))
@@ -27,11 +27,11 @@ End Sub
 
 
 Sub KABFilter()
-    ' Определение последней строки с данными в столбце A
+    ' РћРїСЂРµРґРµР»РµРЅРёРµ РїРѕСЃР»РµРґРЅРµР№ СЃС‚СЂРѕРєРё СЃ РґР°РЅРЅС‹РјРё РІ СЃС‚РѕР»Р±С†Рµ A
     mngrFilter.AutoFilter Field:=31, Criteria1:="1"
 End Sub
 
 Sub KABUnFilter()
-    ' Определение последней строки с данными в столбце A
+    ' РћРїСЂРµРґРµР»РµРЅРёРµ РїРѕСЃР»РµРґРЅРµР№ СЃС‚СЂРѕРєРё СЃ РґР°РЅРЅС‹РјРё РІ СЃС‚РѕР»Р±С†Рµ A
     mngrFilter.AutoFilter Field:=31
 End Sub

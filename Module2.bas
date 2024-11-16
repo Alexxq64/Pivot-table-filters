@@ -9,36 +9,36 @@ Sub FilterByMonths(ParamArray monthNumbers() As Variant)
 
     Application.ScreenUpdating = False
 
-    ' Устанавливаем верхнюю границу массива параметров
+    ' РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РІРµСЂС…РЅСЋСЋ РіСЂР°РЅРёС†Сѓ РјР°СЃСЃРёРІР° РїР°СЂР°РјРµС‚СЂРѕРІ
     paramArrayUBound = UBound(monthNumbers)
     
-    ' так как сводная таблица обновляется при каждом изменении pivotItem.Visible меняем не все элементы,
-    ' а только те, которые необходимо изменить
-    ' иначе скорость выполнения фильтрации катастрофически падает
-    ' Создаем массив newValue для хранения видимости элементов
+    ' С‚Р°Рє РєР°Рє СЃРІРѕРґРЅР°СЏ С‚Р°Р±Р»РёС†Р° РѕР±РЅРѕРІР»СЏРµС‚СЃСЏ РїСЂРё РєР°Р¶РґРѕРј РёР·РјРµРЅРµРЅРёРё pivotItem.Visible РјРµРЅСЏРµРј РЅРµ РІСЃРµ СЌР»РµРјРµРЅС‚С‹,
+    ' Р° С‚РѕР»СЊРєРѕ С‚Рµ, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РёР·РјРµРЅРёС‚СЊ
+    ' РёРЅР°С‡Рµ СЃРєРѕСЂРѕСЃС‚СЊ РІС‹РїРѕР»РЅРµРЅРёСЏ С„РёР»СЊС‚СЂР°С†РёРё РєР°С‚Р°СЃС‚СЂРѕС„РёС‡РµСЃРєРё РїР°РґР°РµС‚
+    ' РЎРѕР·РґР°РµРј РјР°СЃСЃРёРІ newValue РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РІРёРґРёРјРѕСЃС‚Рё СЌР»РµРјРµРЅС‚РѕРІ
     ReDim newValue(1 To pfMonthsQtty)
 
-    ' Устанавливаем True для месяцев, указанных в monthNumbers
+    ' РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј True РґР»СЏ РјРµСЃСЏС†РµРІ, СѓРєР°Р·Р°РЅРЅС‹С… РІ monthNumbers
     For i = 0 To paramArrayUBound
         If monthNumbers(i) >= 1 And monthNumbers(i) <= pfMonthsQtty Then
             newValue(monthNumbers(i)) = True
         End If
     Next i
 
-    ' Сдвиг, начиная с первого значения в monthNumbers
+    ' РЎРґРІРёРі, РЅР°С‡РёРЅР°СЏ СЃ РїРµСЂРІРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ РІ monthNumbers
     shift = monthNumbers(0) - 1
 
-    ' Проходим по элементам pivotItems, начиная с первого, у которого будет установлена visible = true
-    ' чтобы избежать ситуации, когда в pivotField не будет ни одного item с visible = true
+    ' РџСЂРѕС…РѕРґРёРј РїРѕ СЌР»РµРјРµРЅС‚Р°Рј pivotItems, РЅР°С‡РёРЅР°СЏ СЃ РїРµСЂРІРѕРіРѕ, Сѓ РєРѕС‚РѕСЂРѕРіРѕ Р±СѓРґРµС‚ СѓСЃС‚Р°РЅРѕРІР»РµРЅР° visible = true
+    ' С‡С‚РѕР±С‹ РёР·Р±РµР¶Р°С‚СЊ СЃРёС‚СѓР°С†РёРё, РєРѕРіРґР° РІ pivotField РЅРµ Р±СѓРґРµС‚ РЅРё РѕРґРЅРѕРіРѕ item СЃ visible = true
     For i = 0 To pfMonthsQtty - 1
-        si = (i + shift) Mod pfMonthsQtty + 1  ' Рассчитываем текущий индекс с учетом сдвига
-        ' Проверяем, нужно ли изменить видимость текущего элемента
+        si = (i + shift) Mod pfMonthsQtty + 1  ' Р Р°СЃСЃС‡РёС‚С‹РІР°РµРј С‚РµРєСѓС‰РёР№ РёРЅРґРµРєСЃ СЃ СѓС‡РµС‚РѕРј СЃРґРІРёРіР°
+        ' РџСЂРѕРІРµСЂСЏРµРј, РЅСѓР¶РЅРѕ Р»Рё РёР·РјРµРЅРёС‚СЊ РІРёРґРёРјРѕСЃС‚СЊ С‚РµРєСѓС‰РµРіРѕ СЌР»РµРјРµРЅС‚Р°
         If pfMonth.PivotItems(si).Visible <> newValue(si) Then
             pfMonth.PivotItems(si).Visible = newValue(si)
         End If
     Next i
 
-    ' Вызываем дополнительный фильтр, если необходимо
+    ' Р’С‹Р·С‹РІР°РµРј РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ С„РёР»СЊС‚СЂ, РµСЃР»Рё РЅРµРѕР±С…РѕРґРёРјРѕ
     KABFilter
 
     Application.ScreenUpdating = True
@@ -91,26 +91,26 @@ End Sub
 '    Dim newValue() As Boolean
 '
 '    Application.ScreenUpdating = False
-'    ' Сбрасываем фильтры перед установкой новых
+'    ' РЎР±СЂР°СЃС‹РІР°РµРј С„РёР»СЊС‚СЂС‹ РїРµСЂРµРґ СѓСЃС‚Р°РЅРѕРІРєРѕР№ РЅРѕРІС‹С…
 '    pfMnfcr.ClearAllFilters
 '
 '    paramArrayUBound = UBound(manufacturerNames)
-'    ' Проходим по каждому производителю в списке manufacturerNames
+'    ' РџСЂРѕС…РѕРґРёРј РїРѕ РєР°Р¶РґРѕРјСѓ РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЋ РІ СЃРїРёСЃРєРµ manufacturerNames
 '    ReDim newValue(1 To pfMnfcrsQtty)
 '
 '
 '
 '    For Each item In pfMnfcr.PivotItems
 '        found = False
-'        ' Проверяем, присутствует ли текущий элемент в массиве manufacturerNames
+'        ' РџСЂРѕРІРµСЂСЏРµРј, РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ Р»Рё С‚РµРєСѓС‰РёР№ СЌР»РµРјРµРЅС‚ РІ РјР°СЃСЃРёРІРµ manufacturerNames
 '        For i = LBound(manufacturerNames) To UBound(manufacturerNames)
-'            ' Сравниваем текущий элемент с переданными производителями
+'            ' РЎСЂР°РІРЅРёРІР°РµРј С‚РµРєСѓС‰РёР№ СЌР»РµРјРµРЅС‚ СЃ РїРµСЂРµРґР°РЅРЅС‹РјРё РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЏРјРё
 '            If item.Name = manufacturerNames(i) Then
 '                found = True
 '                Exit For
 '            End If
 '        Next i
-'        ' Устанавливаем видимость текущего элемента
+'        ' РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РІРёРґРёРјРѕСЃС‚СЊ С‚РµРєСѓС‰РµРіРѕ СЌР»РµРјРµРЅС‚Р°
 '        item.Visible = found
 '    Next item
 '    KABFilter
@@ -128,18 +128,18 @@ Sub FilterByManufacturers(ParamArray manufacturerNames() As Variant)
 
     Application.ScreenUpdating = False
 
-    ' Устанавливаем верхнюю границу массива параметров
+    ' РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РІРµСЂС…РЅСЋСЋ РіСЂР°РЅРёС†Сѓ РјР°СЃСЃРёРІР° РїР°СЂР°РјРµС‚СЂРѕРІ
     paramArrayUBound = UBound(manufacturerNames)
     
-    ' Определяем количество элементов (производителей) в поле сводной таблицы
+    ' РћРїСЂРµРґРµР»СЏРµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ (РїСЂРѕРёР·РІРѕРґРёС‚РµР»РµР№) РІ РїРѕР»Рµ СЃРІРѕРґРЅРѕР№ С‚Р°Р±Р»РёС†С‹
 '    itemCount = pfMnfcr.PivotItems.Count
     ReDim newValue(1 To pfMnfcrsQtty)
 
-    ' Устанавливаем True для элементов, указанных в manufacturerNames
+    ' РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј True РґР»СЏ СЌР»РµРјРµРЅС‚РѕРІ, СѓРєР°Р·Р°РЅРЅС‹С… РІ manufacturerNames
     For Each item In pfMnfcr.PivotItems
         For i = 0 To paramArrayUBound
             If item.Name = manufacturerNames(i) Then
-                ' Найти позицию элемента вручную
+                ' РќР°Р№С‚Рё РїРѕР·РёС†РёСЋ СЌР»РµРјРµРЅС‚Р° РІСЂСѓС‡РЅСѓСЋ
                 For j = 1 To pfMnfcrsQtty
                     If pfMnfcr.PivotItems(j).Name = item.Name Then
                         itemPosition = j
@@ -147,10 +147,10 @@ Sub FilterByManufacturers(ParamArray manufacturerNames() As Variant)
                     End If
                 Next j
                 
-                ' Устанавливаем значение в массиве newValue
+                ' РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р·РЅР°С‡РµРЅРёРµ РІ РјР°СЃСЃРёРІРµ newValue
                 newValue(itemPosition) = True
 
-                ' Устанавливаем элемент видимым, если он еще не видим
+                ' РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЌР»РµРјРµРЅС‚ РІРёРґРёРјС‹Рј, РµСЃР»Рё РѕРЅ РµС‰Рµ РЅРµ РІРёРґРёРј
                 If item.Visible = False Then
                     item.Visible = True
                 End If
@@ -159,17 +159,17 @@ Sub FilterByManufacturers(ParamArray manufacturerNames() As Variant)
         Next i
     Next item
 
-    ' Второй проход: Устанавливаем невидимость для остальных элементов
+    ' Р’С‚РѕСЂРѕР№ РїСЂРѕС…РѕРґ: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РЅРµРІРёРґРёРјРѕСЃС‚СЊ РґР»СЏ РѕСЃС‚Р°Р»СЊРЅС‹С… СЌР»РµРјРµРЅС‚РѕРІ
     For i = 1 To pfMnfcrsQtty
         If newValue(i) = False Then
-            ' Устанавливаем элемент невидимым, если он видим
+            ' РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЌР»РµРјРµРЅС‚ РЅРµРІРёРґРёРјС‹Рј, РµСЃР»Рё РѕРЅ РІРёРґРёРј
             If pfMnfcr.PivotItems(i).Visible = True Then
                 pfMnfcr.PivotItems(i).Visible = False
             End If
         End If
     Next i
 
-    ' Вызываем дополнительный фильтр, если необходимо
+    ' Р’С‹Р·С‹РІР°РµРј РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ С„РёР»СЊС‚СЂ, РµСЃР»Рё РЅРµРѕР±С…РѕРґРёРјРѕ
     KABFilter
 
     Application.ScreenUpdating = True
@@ -180,27 +180,27 @@ End Sub
 
 
 Sub FilterBagi()
-    FilterByManufacturers "ТМ Bagi"
+    FilterByManufacturers "РўРњ Bagi"
 End Sub
 
 Sub FilterRD()
-    FilterByManufacturers "Российская дистрибьюция"
+    FilterByManufacturers "Р РѕСЃСЃРёР№СЃРєР°СЏ РґРёСЃС‚СЂРёР±СЊСЋС†РёСЏ"
 End Sub
 
 Sub FilterHiyat()
-    Call FilterByManufacturers("ООО ""Хаят Маркетинг""")
+    Call FilterByManufacturers("РћРћРћ ""РҐР°СЏС‚ РњР°СЂРєРµС‚РёРЅРі""")
 End Sub
 
 
 Sub FilterDBH()
-    FilterByManufacturers "ДомБытХим ООО"
+    FilterByManufacturers "Р”РѕРјР‘С‹С‚РҐРёРј РћРћРћ"
 End Sub
 
 Sub FilterImpulse()
-    FilterByManufacturers "Импульс ООО"
+    FilterByManufacturers "РРјРїСѓР»СЊСЃ РћРћРћ"
 End Sub
 
 Sub FilterAllManufacturers()
-    FilterByManufacturers "Импульс ООО", "ДомБытХим ООО", "ООО ""Хаят Маркетинг""", "Российская дистрибьюция", "ТМ Bagi"
+    FilterByManufacturers "РРјРїСѓР»СЊСЃ РћРћРћ", "Р”РѕРјР‘С‹С‚РҐРёРј РћРћРћ", "РћРћРћ ""РҐР°СЏС‚ РњР°СЂРєРµС‚РёРЅРі""", "Р РѕСЃСЃРёР№СЃРєР°СЏ РґРёСЃС‚СЂРёР±СЊСЋС†РёСЏ", "РўРњ Bagi"
 End Sub
 
