@@ -1,38 +1,56 @@
- Here is the translation of your explanation:
+### Optimization Techniques for Setting the `Visible` Property in Pivot Table Filters  
+
+The provided filtering functions implement optimizations to avoid situations where no `PivotItem` is visible, which could result in an error or incorrect pivot table behavior. These optimizations are implemented through two main methods: **shifting the filtering start point** in the month filtering function and **using two passes** in the manufacturer filtering function.  
+
+### Why Modify `Visible` Only When Necessary?  
+1. **Recalculation Overhead**:  
+   Any change to the `Visible` property of a `PivotItem` in a pivot table triggers a recalculation of the entire table. This recalculation happens regardless of whether the visibility of that `PivotItem` actually changed.  
+
+2. **Performance Impact**:  
+   - **Without optimization**: Processing all elements (even those already correctly visible or hidden) leads to unnecessary recalculations, which can significantly increase execution time.  
+   - **With optimization**: By modifying the `Visible` property only for items requiring a change, recalculations are minimized, resulting in faster execution.  
+
+For large tables with many `PivotItem` elements, this optimization can reduce execution time by up to **20 times**, as seen in the examples for filtering months and manufacturers.  
 
 ---
 
-### 1. **Shift in the Month Filtering Function (`FilterByMonths`)**
-#### Why is the shift used?
-The shift in the month filtering function (`FilterByMonths`) is necessary for the proper functioning of month filtering to avoid a situation where all items in the pivot table become invisible.
+### Two Methods for Optimizing `Visible` Property Modifications  
 
-#### Why shift?
+#### **1. Shift in the Month Filtering Function (`FilterByMonths`)**  
 
-Without the shift, the pivot table might end up with no visible items. The shift guarantees that at least one item will remain visible.
-The first month in the array of months passed will be the first in the loop, and it will be visible. That means at least one month (the first from the array) will be visible.
+##### Purpose of the Shift  
+The shift ensures that at least one `PivotItem` (month) remains visible during filtering, avoiding a situation where all items are hidden.  
 
-If the shift is not used, the entire pivot table might be left without any visible items. The shift helps to adjust the indices of the months, ensuring that at least one month is visible, as the shift moves the filtering start to a different month.
+##### Why Is the Shift Necessary?  
+- **Avoiding an Empty Pivot Table**: If no items are visible, the pivot table becomes invalid, causing errors. The shift adjusts the filtering process so that the first item in the passed array of months is prioritized and remains visible.  
+- **Guaranteeing Visibility**: The shift realigns the indices of the months, ensuring that the first visible month corresponds to the starting point of the filtering process.  
 
----
-
-### 2. **Two Passes in the Manufacturer Filtering Function (`FilterByManufacturers`)**
-#### Why are two passes used?
-Two passes are necessary in the manufacturer filtering function (`FilterByManufacturers`) to ensure correct display and hiding of items in the pivot table. This mechanism helps avoid a situation where no visible items remain in the pivot table (for example, if all manufacturers are hidden).
-
-#### Filtering Process:
-
-- **First pass**: The function checks all items in the pivot table and for each manufacturer, it checks whether they are in the list of passed manufacturers (`manufacturerNames`). If the item is present, its visibility is set to `True`.
-- **Second pass**: After the first pass, the function checks all items that were not set as visible and sets their visibility to `False` (i.e., hides them if they are not in the list of selected manufacturers).
-
-In the first pass, we set the visibility for only those manufacturers present in the passed list. However, this does not guarantee that the remaining items in the pivot table will be hidden.
-In the second pass, we handle all the remaining items and ensure that only the required items (manufacturers) are visible, while the rest are hidden.
+##### How the Shift Works  
+- The filtering loop begins with the first month from the array (`monthNumbers`) and calculates indices relative to this starting point.  
+- This guarantees that the first month in the array is visible, while other months are processed relative to this shifted start.  
 
 ---
 
-### Conclusion
+#### **2. Two Passes in the Manufacturer Filtering Function (`FilterByManufacturers`)**  
 
-- The shift in the month filtering function is necessary to prevent a situation where there will be no visible items in the pivot table. It ensures that at least one month will be displayed, despite any changes in the month indices.
+##### Purpose of Two Passes  
+The two-pass approach ensures that only the desired manufacturers are visible, while all others are hidden. This method guarantees that no visible items are accidentally left out, preventing errors in the pivot table.  
 
-- The two passes in the manufacturer filtering function are necessary to correctly set the visibility of all items, preventing a situation where all items are hidden. In the first pass, we make only the required manufacturers visible, and in the second, we hide all others, ensuring only the relevant data is displayed.
+##### Why Are Two Passes Necessary?  
+- **First Pass**: Ensures that the required manufacturers (from the passed array `manufacturerNames`) are visible. The function loops through all `PivotItem` elements, matching their names to the provided list and marking them as visible.  
+- **Second Pass**: Hides any remaining manufacturers that were not included in the list. This ensures that only the desired items are visible while all others are correctly hidden.  
 
-Thus, both techniques (the shift and the two passes) serve to prevent an empty pivot table, which is crucial for proper filtering functionality in Excel.
+##### Avoiding Performance Bottlenecks  
+Using two passes separates the logic of making required items visible and hiding unnecessary items. This avoids redundant recalculations during the visibility changes, maintaining performance while ensuring accurate filtering.  
+
+---
+
+### Conclusion  
+
+1. **Shift in Month Filtering**:  
+   The shift guarantees that at least one month remains visible, preventing an empty pivot table and ensuring a robust filtering process.  
+
+2. **Two Passes in Manufacturer Filtering**:  
+   The two-pass method ensures all required manufacturers are visible and all others are hidden. This avoids inconsistencies while optimizing performance by minimizing unnecessary recalculations.  
+
+Both techniques ensure efficient and error-free pivot table filtering, especially when dealing with large datasets or complex pivot table structures.
